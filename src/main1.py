@@ -96,18 +96,15 @@ from utils.logger import setup_logger
 
 logger = setup_logger("main")
 
-# ---------------------------------------------------------
 # Global resources
-# ---------------------------------------------------------
 vad_model = None
 vad_utils = None
 college_vectorstore = None
 embeddings = None
 
 
-# ---------------------------------------------------------
+
 # Lifespan (startup / shutdown)
-# ---------------------------------------------------------
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     global vad_model, vad_utils, college_vectorstore, embeddings
@@ -130,21 +127,16 @@ async def lifespan(app: FastAPI):
 
     yield  # ---- App is running ----
 
-    # Shutdown logic (optional)
     logger.info("🛑 Shutting down Voice Agent Server")
 
 
-# ---------------------------------------------------------
-# FastAPI app
-# ---------------------------------------------------------
+
 app = FastAPI(
     title="Voice + RAG Agent",
     lifespan=lifespan
 )
 
-# ---------------------------------------------------------
 # CORS
-# ---------------------------------------------------------
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -153,9 +145,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# ---------------------------------------------------------
+
 # WebSocket endpoint
-# ---------------------------------------------------------
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
     await handle_websocket(
@@ -166,17 +157,13 @@ async def websocket_endpoint(websocket: WebSocket):
     )
 
 
-# ---------------------------------------------------------
-# Health check
-# ---------------------------------------------------------
+
 @app.get("/health")
 def health():
     return {"status": "ok"}
 
 
-# ---------------------------------------------------------
-# Run server
-# ---------------------------------------------------------
+
 if __name__ == "__main__":
     uvicorn.run(
         "main:app",
