@@ -1,0 +1,37 @@
+# API and server 
+fastapi
+websockets 
+uvicorn 
+
+# core 
+numpy 
+soundfile 
+scipy
+dotenv
+requests
+PyMuPDF
+pypdf 
+
+# embeddings & vector store & RAG 
+langchain
+langchain-community 
+langchain-nvidia-ai-endpoints
+pinecone
+langchain-pinecone
+langchain-huggingface 
+sentence_transformers
+langchain-text-splitters
+faiss-cpu
+
+# vad 
+torch 
+torchaudio
+silero-vad
+
+# models 
+faster-whisper 
+groq
+
+
+# external tools 
+duckduckgo-search
