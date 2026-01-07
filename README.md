@@ -19,7 +19,7 @@
 
 ## 🎯 Project Overview
 
-A sophisticated **real-time voice agent** that combines speech recognition, natural language understanding, and text-to-speech synthesis to create an intelligent conversational assistant. The system leverages **Retrieval-Augmented Generation (RAG)** to answer questions from uploaded PDFs, performs web searches, and maintains context-aware conversations - all through natural voice interactions.
+A **real-time voice agent** that combines speech recognition, natural language understanding, and text-to-speech synthesis to create an intelligent conversational assistant. The system leverages **Retrieval-Augmented Generation (RAG)** to answer questions from uploaded PDFs, performs web searches, and finds your public IP address - all through natural voice interactions.
 
 ### Key Capabilities
 
