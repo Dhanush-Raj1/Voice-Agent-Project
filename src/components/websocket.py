@@ -96,13 +96,33 @@ async def handle_websocket(websocket: WebSocket, vad_model, vad_utils, embedding
                                     except Exception as e:
                                         logger.error(f"Error: {e}")
                             
-                            break  # jumps to finally (at the end)
+                            # do not close websocket for render
+                            # break  # jumps to finally (at the end)   
+                            
+                            # for render to keep the websocket alive 
+                            # Reset VAD for next recording session
+                            if vad_processor:
+                                vad_processor.reset()
+                            segment_count = 0
+                            
+                            await websocket.send_json({"type": "stop_acknowledged",
+                                                       "message": "Ready for next recording"})   
+                            continue 
                     
                     # if text message is NOT valid JSON, and that text is "STOP", then exit the WebSocket loop(while True loop)
                     # and end the session
                     except json.JSONDecodeError:
                         if msg["text"] == "STOP":
-                            break
+                            # do not close websocket for render 
+                            # break
+
+                            # for render to keep the websocket alive 
+                            # Reset VAD for next recording session
+                            if vad_processor:
+                                vad_processor.reset()
+                            segment_count = 0
+                            
+                            continue
 
 
                 # Handle audio bytes
