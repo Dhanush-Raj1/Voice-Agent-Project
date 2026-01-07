@@ -23,8 +23,9 @@
 👉 [Access the web app here](https://voice-agent-project-eszo.onrender.com)    
   
 > [!NOTE]
-> The voice agent requires lot of computing power as a result the agent might be slow or takes time to reload/refresh.   
-> The initial load of the web app may take 1-2 minutes. Once loaded, refresh the page to ensure all features work correctly.   
+> The voice agent requires lot of computing power as a result the agent might be slow or takes time to reload/refresh.
+> For the best experience, please use **Google Chrome**, as the application has been tested and validated primarily on Chrome.
+> The initial load of the web app may take 1-2 minutes.    
     
 > [!TIP]  
 > For the best experience, please refer to the [Usage Guide](#-usage-guide) section below to learn how to navigate and use the web app effectively.
@@ -261,10 +262,11 @@ The server will start at: **`http://localhost:8000`**
 
 👉 [Access the web app](https://voice-agent-project-eszo.onrender.com)
 
-1. **Start Recording**: Click the **"Start Recording"** button to connect
-2. **Grant Microphone Access**: Allow browser to access your microphone
-3. **Start Talking**: The system automatically detects when you speak
-4. **Response**: Once you stop speaking the response is then generated 
+1. **Open in Chrome**: Launch the application using **Google Chrome**, which is the primary tested browser
+2. **Start Recording**: Click the **"Start Recording"** button to connect
+3. **Grant Microphone Access**: Allow browser to access your microphone
+4. **Start Talking**: The system automatically detects when you speak
+5. **Response**: Once you stop speaking the response is then generated 
 
 ### 💬 Example Interactions
 
