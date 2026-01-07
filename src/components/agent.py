@@ -9,30 +9,30 @@ logger = setup_logger("agent")
 groq_client = Groq(api_key=GROQ_API_KEY)
 
 
+
 def process_with_agent(user_text: str, session_store: SessionPDFStore) -> str:
     """Process user text with LLM that can use tools"""
+
     try:
         logger.info("Agent processing...")
         
-        messages = [
-            {"role": "system", "content": SYSTEM_PROMPT},
-            {"role": "user", "content": user_text}
-        ]
+        messages = [{"role": "system", "content": SYSTEM_PROMPT},
+                    {"role": "user", "content": user_text}]
         
         response = groq_client.chat.completions.create(
-            messages=messages,
-            model=LLM_MODEL,
-            tools=TOOLS,
-            tool_choice="auto",
-            temperature=0.4,
-            max_tokens=500,
-            stream=False,
-            reasoning_format="hidden",
-        )
+                                messages=messages,
+                                model=LLM_MODEL,
+                                tools=TOOLS,
+                                tool_choice="auto",
+                                temperature=0.4,
+                                max_tokens=500,
+                                stream=False,
+                                reasoning_format="hidden",)
 
-        response_message = response.choices[0].message
+        response_message = response.choices[0].message            # this object contains .content, .tool_calls 
 
-        if response_message.tool_calls:
+        if response_message.tool_calls:         # if "tool_calls" present in the content of the response schema 
+
             logger.info(f"LLM wants to use {len(response_message.tool_calls)} tool(s)")
 
             messages.append(response_message)
@@ -55,20 +55,19 @@ def process_with_agent(user_text: str, session_store: SessionPDFStore) -> str:
                 else:
                     function_response = f"Unknown tool: {function_name}"
 
-                messages.append({
-                    "role": "tool",
-                    "tool_call_id": tool_call.id,
-                    "name": function_name,
-                    "content": function_response
-                })
+                # append tool results back to message 
+                messages.append({"role": "tool",
+                                 "tool_call_id": tool_call.id,
+                                 "name": function_name,
+                                 "content": function_response})
 
             logger.info("Getting final response from LLM...")
-            final_response = groq_client.chat.completions.create(
-                messages=messages,
-                model=LLM_MODEL,
-                temperature=LLM_TEMPERATURE,
-                max_tokens=LLM_MAX_TOKENS
-            )
+
+            final_response = groq_client.chat.completions.create(       # LLM sees original question, tool output and generates a response
+                                messages=messages,
+                                model=LLM_MODEL,
+                                temperature=LLM_TEMPERATURE,
+                                max_tokens=LLM_MAX_TOKENS)
 
             agent_response = final_response.choices[0].message.content
         else:

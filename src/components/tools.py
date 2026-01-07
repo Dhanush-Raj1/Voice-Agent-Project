@@ -83,54 +83,30 @@ def query_uploaded_pdf(question: str, session_store: SessionPDFStore):
 
 # Tool definitions for LLM
 TOOLS = [
-    {
-        "type": "function",
-        "function": {
-            "name": "get_ip_address",
-            "description": "Get the user's current public IP address.",
-            "parameters": {"type": "object", "properties": {}, "required": []}
-        }
-    },
-    {
-        "type": "function",
-        "function": {
-            "name": "search_web",
-            "description": "Search the web for current information, news, or facts.",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "query": {"type": "string", "description": "The search query"}
-                },
-                "required": ["query"]
-            }
-        }
-    },
-    {
-        "type": "function",
-        "function": {
-            "name": "get_college_info",
-            "description": "Get information about Madras Christian College (MCC) from the knowledge base.",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "question": {"type": "string", "description": "The user's question about the college"}
-                },
-                "required": ["question"]
-            }
-        }
-    },
-    {
-        "type": "function",
-        "function": {
-            "name": "query_uploaded_pdf",
-            "description": "Answer questions from user's uploaded PDF documents.",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "question": {"type": "string", "description": "The question about the PDF content"}
-                },
-                "required": ["question"]
-            }
-        }
-    }
+    {"type": "function",
+        "function": {"name": "get_ip_address",
+                     "description": "Get the user's current public IP address.",
+                     "parameters": {"type": "object", "properties": {}, "required": []}}},
+
+    {"type": "function",
+        "function": {"name": "search_web",
+                    "description": "Search the web for current information, news, or facts.",
+                    "parameters": {"type": "object",
+                                   "properties": {"query": {"type": "string", "description": "The search query"}},
+                                   "required": ["query"]}}},
+
+    {"type": "function",
+        "function": {"name": "get_college_info",
+                     "description": "Get information about Madras Christian College (MCC) from the knowledge base.",
+                     "parameters": {"type": "object",
+                                    "properties": {"question": {"type": "string", "description": "The user's question about the college"}},
+                                    "required": ["question"]}}},
+
+    {"type": "function",
+        "function": {"name": "query_uploaded_pdf",
+                     "description": "Answer questions from user's uploaded PDF documents.",
+                     "parameters": {"type": "object",
+                                    "properties": {"question": {"type": "string", "description": "The question about the PDF content"}},
+                                    "required": ["question"]}}}
+                                    
 ]
