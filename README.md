@@ -145,7 +145,7 @@ A **real-time voice agent** that combines speech recognition, natural language u
 📂 Voice-Agent-Project
 │
 ├── 📂 src
-│   ├── main1.py                      # FastAPI server & WebSocket handler
+│   ├── main.py                      # FastAPI server & WebSocket handler
 │   │
 │   ├── 📂 components
 │   │   ├── agent.py                  # LLM agent with tool orchestration
@@ -164,7 +164,8 @@ A **real-time voice agent** that combines speech recognition, natural language u
 │   └── index.html                    # Web interface (HTML/CSS/JS)
 │
 ├── 📂 data
-│   └── college_info.pdf              # Pdf file for RAG 
+│   └── college_info.pdf              # Pdf file for RAG
+│   └── tesla_report.pdf              # Pdf file for upload and chat with 
 │
 ├── .gitignore
 ├── requirements.txt
