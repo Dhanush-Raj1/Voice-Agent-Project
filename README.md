@@ -284,8 +284,7 @@ The server will start at: **`http://localhost:8000`**
 
 - ✅ Speak clearly and at a normal pace
 - ✅ Wait for the agent to finish responding before asking the next question
-- ✅ Use the "Stop Recording" button if the system doesn't auto-detect speech end
-- ✅ Upload PDFs before asking questions about them
+- ✅ Use the "Stop Recording" button if the system doesn't auto-detect speech 
 - ✅ Keep questions concise for faster processing
 
 <br>
