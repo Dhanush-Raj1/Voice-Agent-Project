@@ -33,7 +33,6 @@
       overflow: hidden;
     }
     
-    /* Header */
     .header {
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       color: white;
@@ -103,7 +102,6 @@
       50% { opacity: 0.7; }
     }
     
-    /* PDF Upload Section */
     .pdf-section {
       padding: 15px 25px;
       background: #f8f9fa;
@@ -179,23 +177,6 @@
       background: #f8d7da;
     }
     
-    .pdf-tag-icon {
-      font-size: 16px;
-    }
-    
-    .pdf-tag-name {
-      font-weight: 600;
-      max-width: 150px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-    
-    .pdf-tag-info {
-      font-size: 11px;
-      color: #666;
-    }
-    
     .connection-warning {
       padding: 10px 15px;
       background: #fff3cd;
@@ -209,7 +190,6 @@
       margin-bottom: 10px;
     }
     
-    /* Chat Area */
     .chat-area {
       flex: 1;
       overflow-y: auto;
@@ -233,7 +213,6 @@
       border-radius: 4px;
     }
     
-    /* Message Bubbles */
     .message-container {
       display: flex;
       margin-bottom: 15px;
@@ -302,7 +281,6 @@
       text-align: right;
     }
     
-    /* Typing Indicator */
     .typing-indicator {
       display: flex;
       align-items: center;
@@ -341,7 +319,6 @@
       }
     }
     
-    /* Empty State */
     .empty-state {
       flex: 1;
       display: flex;
@@ -370,7 +347,6 @@
       color: #aaa;
     }
     
-    /* Controls */
     .controls {
       padding: 20px 25px;
       background: white;
@@ -421,11 +397,6 @@
       box-shadow: 0 6px 20px rgba(255, 118, 117, 0.4);
     }
     
-    .button-icon {
-      font-size: 18px;
-    }
-    
-    /* Helper Text */
     .helper-text {
       padding: 12px 25px;
       background: #e3f2fd;
@@ -435,7 +406,15 @@
       text-align: center;
     }
     
-    /* Responsive */
+    .message-bubble.speaking {
+      animation: pulse-border 1.5s infinite;
+    }
+
+    @keyframes pulse-border {
+      0%, 100% { box-shadow: 0 2px 5px rgba(102, 126, 234, 0.4); }
+      50% { box-shadow: 0 2px 15px rgba(102, 126, 234, 0.8); }
+    }
+
     @media (max-width: 768px) {
       .container {
         height: 95vh;
@@ -454,7 +433,6 @@
 </head>
 <body>
   <div class="container">
-    <!-- Header -->
     <div class="header">
       <div class="header-left">
         <div class="header-icon">🎤</div>
@@ -469,7 +447,6 @@
       </div>
     </div>
     
-    <!-- PDF Upload Section -->
     <div class="pdf-section">
       <input type="file" id="pdfInput" accept=".pdf" multiple>
       <button class="upload-btn" id="uploadBtn" disabled title="Connect first by clicking 'Start Recording'">
@@ -481,7 +458,6 @@
       </div>
     </div>
     
-    <!-- Chat Area -->
     <div class="chat-area" id="chatArea">
       <div class="connection-warning" id="connectionWarning">
         ⚠️ Click "Start Recording" below to connect, then you can upload PDFs
@@ -493,12 +469,10 @@
       </div>
     </div>
     
-    <!-- Helper Text -->
     <div class="helper-text">
       💡 Try: "What's my IP?", "Search for AI news", "Tell me about MCC", or "Summarize my PDF"
     </div>
     
-    <!-- Controls -->
     <div class="controls">
       <button class="control-btn" id="startBtn">
         <span class="button-icon">🎙️</span>
@@ -532,9 +506,7 @@
     let currentUserMessage = null;
     let lastChunkText = "";
     let typingIndicator = null;
-    let uploadedPDFs = [];
 
-    // PDF Upload Handlers
     uploadBtn.onclick = () => {
       if (!ws || ws.readyState !== WebSocket.OPEN) {
         alert('⚠️ Please click "Start Recording" first to connect to the server!');
@@ -546,12 +518,7 @@
     pdfInput.onchange = async (e) => {
       const files = e.target.files;
       
-      console.log('Files selected:', files.length); // DEBUG
-      
-      if (!files.length) {
-        console.log('No files selected'); // DEBUG
-        return;
-      }
+      if (!files.length) return;
 
       if (!ws || ws.readyState !== WebSocket.OPEN) {
         alert('⚠️ Connection lost! Please restart recording.');
@@ -559,41 +526,27 @@
       }
 
       for (let file of files) {
-        console.log('Processing file:', file.name, 'Type:', file.type); // DEBUG
-        
         if (file.type !== 'application/pdf') {
           alert(`❌ ${file.name} is not a PDF file`);
           continue;
         }
 
-        // Show processing state
         addPDFTag(file.name, 'processing', '⏳ Uploading...');
-        
-        console.log('Starting file read for:', file.name); // DEBUG
 
-        // Read file as base64
         const reader = new FileReader();
         
         reader.onload = (event) => {
-          console.log('File loaded:', file.name); // DEBUG
-          
           const base64Data = event.target.result.split(',')[1];
-          
-          console.log('Sending to WebSocket, size:', base64Data.length); // DEBUG
-
-          // Send to backend
           const message = JSON.stringify({
             type: 'upload_pdf',
             filename: file.name,
             data: base64Data
           });
-          
           ws.send(message);
-          console.log('Message sent to backend'); // DEBUG
         };
         
         reader.onerror = (error) => {
-          console.error('File read error:', error); // DEBUG
+          console.error('File read error:', error);
           addPDFTag(file.name, 'failed', '❌ Read failed');
         };
         
@@ -604,23 +557,19 @@
     };
 
     function addPDFTag(filename, status = 'processing', info = '') {
-      // Remove "no PDFs" message
       const noFileMsg = pdfList.querySelector('span');
       if (noFileMsg) {
         pdfList.innerHTML = '';
       }
 
-      // Check if already exists
       let existingTag = document.querySelector(`[data-filename="${filename}"]`);
       
       if (existingTag) {
-        // Update existing tag
         existingTag.className = `pdf-tag ${status}`;
         existingTag.querySelector('.pdf-tag-info').textContent = info;
         return;
       }
 
-      // Create new tag
       const tag = document.createElement('div');
       tag.className = `pdf-tag ${status}`;
       tag.setAttribute('data-filename', filename);
@@ -780,17 +729,76 @@
       return output;
     }
 
+    function playAudio(base64Audio) {
+      try {
+        console.log('🔊 playAudio called');
+        console.log('📦 Audio data length:', base64Audio ? base64Audio.length : 0);
+        
+        if (!base64Audio) {
+          console.error('❌ No audio data provided');
+          return;
+        }
+
+        // Convert base64 to blob
+        const binaryString = atob(base64Audio);
+        console.log('✅ Base64 decoded, size:', binaryString.length, 'bytes');
+        
+        const bytes = new Uint8Array(binaryString.length);
+        for (let i = 0; i < binaryString.length; i++) {
+          bytes[i] = binaryString.charCodeAt(i);
+        }
+        
+        const blob = new Blob([bytes], { type: 'audio/mpeg' });
+        console.log('✅ Blob created, size:', blob.size, 'bytes');
+
+        // Create and play audio
+        const audioUrl = URL.createObjectURL(blob);
+        console.log('✅ Audio URL created:', audioUrl);
+        
+        const audio = new Audio(audioUrl);
+        
+        audio.onloadedmetadata = () => {
+          console.log('✅ Audio metadata loaded, duration:', audio.duration, 'seconds');
+        };
+        
+        audio.onplay = () => {
+          console.log('▶️  Audio started playing');
+        };
+
+        audio.onended = () => {
+          console.log('⏹️  Audio finished playing');
+          URL.revokeObjectURL(audioUrl);
+        };
+        
+        audio.onerror = (e) => {
+          console.error('❌ Audio playback error:', e);
+          console.error('Audio error code:', audio.error?.code);
+          console.error('Audio error message:', audio.error?.message);
+        };
+
+        audio.play().then(() => {
+          console.log('✅ Audio.play() promise resolved');
+        }).catch(err => {
+          console.error('❌ Audio.play() promise rejected:', err);
+        });
+
+      } catch (error) {
+        console.error('❌ Exception in playAudio:', error);
+      }
+    }
+
     startBtn.onclick = async () => {
       try {
         updateStatus("Connecting...", "disconnected");
         startBtn.disabled = true;
         
-        ws = new WebSocket("ws://127.0.0.1:8000/ws/audio");
+        // 🔥 FIXED: Changed from /ws/audio to /ws
+        ws = new WebSocket("ws://127.0.0.1:8000/ws");
         ws.binaryType = "arraybuffer";
 
         ws.onmessage = (event) => {
           const data = JSON.parse(event.data);
-          console.log("Received from backend:", data); // DEBUG
+          console.log("📨 Received from backend:", data);
           
           if (data.type === "partial_transcript") {
             if (data.text.trim()) {
@@ -804,17 +812,29 @@
             finalizeUserMessage();
             
           } else if (data.type === "agent_response") {
+            console.log('🤖 Agent response received');
+            console.log('📝 Text:', data.text);
+            console.log('🎵 Has audio:', !!data.audio);
+            if (data.audio) {
+              console.log('🎵 Audio data length:', data.audio.length);
+            }
+            
             finalizeUserMessage();
             removeTypingIndicator();
             
             if (data.text.trim()) {
               addMessage(data.text, 'agent');
+
+              // Play audio if available
+              if (data.audio) {
+                console.log('🔊 Attempting to play audio...');
+                playAudio(data.audio);
+              } else {
+                console.warn('⚠️  No audio data in response');
+              }
             }
             
           } else if (data.type === "pdf_uploaded") {
-            console.log('PDF upload response:', data); // DEBUG
-            
-            // Handle PDF upload confirmation
             const status = data.status === 'ready' ? 'ready' : 'failed';
             const info = status === 'ready' 
               ? `✅ ${data.chunks} chunks, ${data.pages} pages` 
@@ -831,14 +851,13 @@
         };
 
         ws.onopen = async () => {
-          console.log('WebSocket connected!'); // DEBUG
+          console.log('✅ WebSocket connected!');
           updateStatus("Recording...", "recording");
           isRecording = true;
           stopBtn.disabled = false;
           uploadBtn.disabled = false;
           uploadBtn.title = 'Upload PDF files';
           
-          // Hide connection warning
           connectionWarning.style.display = 'none';
 
           stream = await navigator.mediaDevices.getUserMedia({ 
@@ -872,12 +891,12 @@
         };
 
         ws.onerror = (error) => {
-          console.error("WebSocket error:", error);
+          console.error("❌ WebSocket error:", error);
           updateStatus("Error", "disconnected");
         };
 
         ws.onclose = () => {
-          console.log('WebSocket closed'); // DEBUG
+          console.log('🔌 WebSocket closed');
           updateStatus("Disconnected", "disconnected");
           isRecording = false;
           startBtn.disabled = false;
@@ -886,13 +905,11 @@
           uploadBtn.title = 'Connect first by clicking "Start Recording"';
           finalizeUserMessage();
           removeTypingIndicator();
-          
-          // Show connection warning
           connectionWarning.style.display = 'flex';
         };
 
       } catch (error) {
-        console.error("Error:", error);
+        console.error("❌ Error:", error);
         alert(`Error: ${error.message}`);
         startBtn.disabled = false;
       }
