@@ -328,14 +328,6 @@ The server will start at: **`http://localhost:8000`**
 ![Main Interface](readme_images/voice_agent_main.png)
 *Clean, modern UI with real-time status indicators*
 
-### Chatbot Interaction
-![Chatbot Demo](readme_images/voice_agent_chat.png)
-*Natural conversation with transcript display and audio responses*
-
-### PDF Upload
-![PDF Upload](readme_images/voice_agent_pdf.png)
-*Easy PDF upload with processing status*
-
 <br>
 
 ## 🔍 Key Components Explained
@@ -381,14 +373,6 @@ The server will start at: **`http://localhost:8000`**
 
 <br>
 
-
-## 📄 License
-
-This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
-
-<br>
-
 ---
 
-<p align="center">Made with ❤️ by [Your Name]</p>
 <p align="center">⭐ Star this repo if you find it helpful!</p>
