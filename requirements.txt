@@ -28,9 +28,10 @@ torch
 torchaudio
 silero-vad
 
-# models 
+# models - STT, TTS 
 faster-whisper 
 groq
+edge-tts 
 
 
 # external tools 
