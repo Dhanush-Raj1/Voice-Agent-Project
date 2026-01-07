@@ -2,7 +2,7 @@ import json
 from groq import Groq
 from components.tools import TOOLS, get_ip_address, search_web, get_college_info, query_uploaded_pdf
 from components.pdf_handler import SessionPDFStore
-from utils.config import GROQ_API_KEY, LLM_MODEL, LLM_TEMPERATURE, LLM_MAX_TOKENS, SYSTEM_PROMPT
+from utils.config import GROQ_API_KEY, LLM_MODEL_RES, LLM_TEMP_RES, LLM_MAX_TOKENS_RES, LLM_MODEL_FIN, LLM_TEMP_FIN, LLM_MAX_TOKENS_FIN, SYSTEM_PROMPT
 from utils.logger import setup_logger
 
 logger = setup_logger("agent")
@@ -21,11 +21,11 @@ def process_with_agent(user_text: str, session_store: SessionPDFStore) -> str:
         
         response = groq_client.chat.completions.create(
                                 messages=messages,
-                                model=LLM_MODEL,
+                                model=LLM_MODEL_RES,
                                 tools=TOOLS,
                                 tool_choice="auto",
-                                temperature=0.4,
-                                max_tokens=500,
+                                temperature=LLM_TEMP_RES,
+                                max_tokens=LLM_MAX_TOKENS_RES,
                                 stream=False,
                                 reasoning_format="hidden",)
 
@@ -65,9 +65,10 @@ def process_with_agent(user_text: str, session_store: SessionPDFStore) -> str:
 
             final_response = groq_client.chat.completions.create(       # LLM sees original question, tool output and generates a response
                                 messages=messages,
-                                model=LLM_MODEL,
-                                temperature=LLM_TEMPERATURE,
-                                max_tokens=LLM_MAX_TOKENS)
+                                model=LLM_MODEL_FIN,
+                                temperature=LLM_TEMP_FIN,
+                                max_tokens=LLM_MAX_TOKENS_FIN,
+                                tools=None,)
 
             agent_response = final_response.choices[0].message.content
         else:
