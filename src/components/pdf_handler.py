@@ -19,14 +19,13 @@ class SessionPDFStore:
         self.uploaded_pdfs: List[Dict] = []
         self.vector_store: Optional[FAISS] = None
         self.all_documents: List[Document] = []
-        self.text_splitter = RecursiveCharacterTextSplitter(
-            chunk_size=CHUNK_SIZE,
-            chunk_overlap=CHUNK_OVERLAP,
-            separators=["\n\n", "\n", ".", "!", "?", ",", " ", ""]
-        )
+        self.text_splitter = RecursiveCharacterTextSplitter(chunk_size=CHUNK_SIZE,
+                                                            chunk_overlap=CHUNK_OVERLAP,
+                                                            separators=["\n\n", "\n", ".", "!", "?", ",", " ", ""])
     
     def add_pdf(self, filename: str, pdf_bytes: bytes) -> Dict:
         """Process and add a PDF to the session store"""
+
         try:
             logger.info(f"Processing PDF: {filename}")
             
@@ -83,8 +82,10 @@ class SessionPDFStore:
                 'status': 'failed'
             }
     
+
     def query(self, question: str, k: int = 3) -> str:
         """Query the uploaded PDFs"""
+
         try:
             if self.vector_store is None or len(self.all_documents) == 0:
                 return "No PDFs have been uploaded yet. Please upload a PDF first."
@@ -112,8 +113,10 @@ class SessionPDFStore:
             logger.error(f"Query error: {e}")
             return f"Error querying PDFs: {str(e)}"
     
+
     def get_pdf_list(self) -> List[Dict]:
         return self.uploaded_pdfs
+    
     
     def clear(self):
         self.uploaded_pdfs = []
