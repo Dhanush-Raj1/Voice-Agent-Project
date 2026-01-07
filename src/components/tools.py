@@ -1,6 +1,8 @@
 import requests
 from duckduckgo_search import DDGS
+from tavily import TavilyClient
 from components.pdf_handler import SessionPDFStore
+from utils.config import TAVILY_API_KEY
 from utils.logger import setup_logger
 
 logger = setup_logger("tools")
@@ -28,24 +30,41 @@ def get_ip_address():
         return "Unable to retrieve IP address"
 
 
-def search_web(query: str, max_results: int = 3):
-    """Search the web using DuckDuckGo"""
-    try:
-        logger.info(f"Searching web for: '{query}'...")
-        results = DDGS().text(query, max_results=max_results)
+# def search_web(query: str, max_results: int = 3):
+#     """Search the web using DuckDuckGo"""
+#     try:
+#         logger.info(f"Searching web for: '{query}'...")
+#         results = DDGS().text(query, max_results=max_results)
 
-        if not results:
-            return "No results found"
+#         if not results:
+#             return "No results found"
+        
+#         formatted_results = []
+#         for i, result in enumerate(results, 1):
+#             formatted_results.append(f"{i}. {result['title']}\n   {result['body'][:200]}...")
+
+#         output = "\n\n".join(formatted_results)
+#         logger.info(f"✅ Found {len(results)} results")
+#         return output
+#     except Exception as e:
+#         logger.error(f"Web search failed: {e}")
+#         return f"Search failed: {str(e)}"
+
+
+def search_web(query: str):
+    try:
+        tavily_client = TavilyClient(api_key=TAVILY_API_KEY)
+        response = tavily_client.search(query, max_results=4)
         
         formatted_results = []
-        for i, result in enumerate(results, 1):
-            formatted_results.append(f"{i}. {result['title']}\n   {result['body'][:200]}...")
-
-        output = "\n\n".join(formatted_results)
-        logger.info(f"✅ Found {len(results)} results")
-        return output
+        for i, result in enumerate(response['results'], 1):
+            formatted_results.append(
+                f"{i}. {result['title']}\n   {result['content']}"
+            )
+        
+        return "\n\n".join(formatted_results)
     except Exception as e:
-        logger.error(f"Web search failed: {e}")
+        logger.error(f"Tavily search failed: {e}")
         return f"Search failed: {str(e)}"
 
 
