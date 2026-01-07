@@ -129,7 +129,8 @@ def load_vad_model():
         model, utils = torch.hub.load(repo_or_dir='snakers4/silero-vad',
                                       model='silero_vad',
                                       force_reload=False,
-                                      onnx=False)
+                                      onnx=False, 
+                                      trust_repo=True)    # for render 
         
         (get_speech_timestamps, _, read_audio, *_) = utils
         

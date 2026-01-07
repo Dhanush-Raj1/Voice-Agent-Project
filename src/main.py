@@ -64,6 +64,7 @@ app.add_middleware(
 
 # Serve the HTML file
 @app.get("/", response_class=HTMLResponse)
+@app.head("/")    # support HEAD requests 
 async def serve_frontend():
     """Serve the index.html file"""
 
