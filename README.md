@@ -7,7 +7,7 @@
   <img src="https://img.shields.io/badge/LangChain-1C3C3C?style=for-the-badge&logo=LangChain&logoColor=black&labelColor=white&color=1C3C3C" />
   <img src="https://img.shields.io/badge/Groq-234452?style=for-the-badge&logoColor=black&labelColor=white&color=f4a852" />
   <img src="https://img.shields.io/badge/Pinecone-234452?style=for-the-badge&logoColor=black&labelColor=green&color=cyan" />
-  <img src="https://img.shields.io/badge/Whisper_AI-412991?style=for-the-badge&logoColor=black&labelColor=white&color=412991" />
+  <img src="https://img.shields.io/badge/Whisper-412991?style=for-the-badge&logoColor=black&labelColor=white&color=412991" />
   <img src="https://img.shields.io/badge/RAG-234452?style=for-the-badge&logoColor=black&labelColor=white&color=yellow" />
   <img src="https://img.shields.io/badge/Edge_TTS-0078D4?style=for-the-badge&logoColor=black&labelColor=white&color=0078D4" />
 </p>
