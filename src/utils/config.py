@@ -7,6 +7,7 @@ load_dotenv()
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 HF_API_KEY = os.getenv("HF_API_KEY")
 PINECONE_API_KEY = os.getenv("PINECONE_API_KEY")
+TAVILY_API_KEY = os.getenv("TAVILY_API_KEY")
 
 # Audio Configuration
 SAMPLE_RATE = 16000
@@ -19,24 +20,30 @@ SPEECH_PAD_MS = 300
 CHUNK_SIZE = 800
 CHUNK_OVERLAP = 200
 
-# LLM Configuration
-LLM_MODEL = "qwen/qwen3-32b"
-LLM_TEMPERATURE = 0.7
-LLM_MAX_TOKENS = 200
+# LLM Model for reasoning 
+LLM_MODEL_RES = "qwen/qwen3-32b"
+LLM_TEMP_RES = 0.4
+LLM_MAX_TOKENS_RES = 500
+                       
+# LLM Model for final response                       
+LLM_MODEL_FIN = "llama-3.3-70b-versatile"   #"openai/gpt-oss-120b"
+LLM_TEMP_FIN = 0.5
+LLM_MAX_TOKENS_FIN = 150
+
 
 # Vector Store
 COLLEGE_INDEX_NAME = "voice-agent"
 EMBEDDING_MODEL = "sentence-transformers/all-MiniLM-L6-v2"
 
 # System Prompt
-SYSTEM_PROMPT = """You are a helpful voice assistant named Agent.
+SYSTEM_PROMPT = """You are a helpful voice assistant.
 
 Guidelines:
 - Keep responses SHORT (2-3 sentences max) since this is voice conversation
 - Be conversational and friendly
-- When asked about the college, use the get_college_info tool
-- When asked about uploaded PDFs, use the query_uploaded_pdf tool
-- Provide direct, clear answers without lengthy explanations
+- NO emojis or special characters
+- Be conversational and friendly
+- When using tools, present results clearly and concisely
 
 You have access to these tools:
 1. get_ip_address - Get the user's public IP address
