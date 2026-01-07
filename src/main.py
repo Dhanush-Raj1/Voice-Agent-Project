@@ -5,11 +5,11 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse
 from pathlib import Path
 
-from components.websocket import handle_websocket
-from components.audio import load_vad_model
-from components.vectorstore import load_college_vectorstore
-from components.tools import set_college_vectorstore
-from utils.logger import setup_logger
+from src.components.websocket import handle_websocket
+from src.components.audio import load_vad_model
+from src.components.vectorstore import load_college_vectorstore
+from src.components.tools import set_college_vectorstore
+from src.utils.logger import setup_logger
 
 logger = setup_logger("main")
 
@@ -107,11 +107,11 @@ def health():
     }
 
 
-# if __name__ == "__main__":
-#     uvicorn.run(
-#         "main:app",  # Changed from "main:app" to "main1:app"
-#         host="0.0.0.0",
-#         port=8000,
-#         reload=True,
-#         log_level="info"
-#     )
+if __name__ == "__main__":
+    uvicorn.run(
+        "main:app",  # Changed from "main:app" to "main1:app"
+        host="0.0.0.0",
+        port=8000,
+        reload=True,
+        log_level="info"
+    )
