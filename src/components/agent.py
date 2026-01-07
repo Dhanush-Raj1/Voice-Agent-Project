@@ -1,9 +1,9 @@
 import json
 from groq import Groq
-from components.tools import TOOLS, get_ip_address, search_web, get_college_info, query_uploaded_pdf
-from components.pdf_handler import SessionPDFStore
-from utils.config import GROQ_API_KEY, LLM_MODEL_RES, LLM_TEMP_RES, LLM_MAX_TOKENS_RES, LLM_MODEL_FIN, LLM_TEMP_FIN, LLM_MAX_TOKENS_FIN, SYSTEM_PROMPT
-from utils.logger import setup_logger
+from src.components.tools import TOOLS, get_ip_address, search_web, get_college_info, query_uploaded_pdf
+from src.components.pdf_handler import SessionPDFStore
+from src.utils.config import GROQ_API_KEY, LLM_MODEL_RES, LLM_TEMP_RES, LLM_MAX_TOKENS_RES, LLM_MODEL_FIN, LLM_TEMP_FIN, LLM_MAX_TOKENS_FIN, SYSTEM_PROMPT
+from src.utils.logger import setup_logger
 
 logger = setup_logger("agent")
 groq_client = Groq(api_key=GROQ_API_KEY)

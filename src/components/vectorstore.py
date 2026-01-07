@@ -5,8 +5,8 @@ from langchain_huggingface import HuggingFaceEndpointEmbeddings
 from pinecone import Pinecone, ServerlessSpec
 from langchain_pinecone import PineconeVectorStore
 from langchain_core.documents import Document
-from utils.config import HF_API_KEY, PINECONE_API_KEY, COLLEGE_INDEX_NAME, EMBEDDING_MODEL
-from utils.logger import setup_logger
+from src.utils.config import HF_API_KEY, PINECONE_API_KEY, COLLEGE_INDEX_NAME, EMBEDDING_MODEL
+from src.utils.logger import setup_logger
 
 logger = setup_logger("vectorstore")
 
