@@ -12,12 +12,28 @@
   <img src="https://img.shields.io/badge/Edge_TTS-0078D4?style=for-the-badge&logoColor=black&labelColor=white&color=0078D4" />
 </p>
 
-<h3 align="center">Real-time Voice-Powered AI Assistant with Document Intelligence and Web Search</h3>
-<h3 align="center">Talk to Your PDFs, Search the Web, and Get Instant Answers - All by Voice!</h3>
+<h3 align="center">Real-time Voice-Powered AI Assistant with Document Intelligence and Web Search</h3>  
+<h3 align="center">Talk to Your PDFs, Search the Web, and Get Instant Answers - All by Voice!</h3>  
 
 <br>
 
-## 🎯 Project Overview
+# 🚀 Live Application
+🌐 The application is deployed and live
+  
+👉 [Access the web app here](https://voice-agent-project-eszo.onrender.com)    
+  
+> [!NOTE]
+> The voice agent requires lot of computing power as a result the agent might be slow or takes time to reload/refresh.
+> For the best experience, please use **Google Chrome**, as the application has been tested and validated primarily on Chrome.
+> The initial load of the web app may take 1-2 minutes.    
+    
+> [!TIP]  
+> For the best experience, please refer to the [Usage Guide](#-usage-guide) section below to learn how to navigate and use the web app effectively.
+
+
+<br>
+
+# 🎯 Project Overview
 
 A **real-time voice agent** that combines speech recognition, natural language understanding, and text-to-speech synthesis to create an intelligent conversational assistant. The system leverages **Retrieval-Augmented Generation (RAG)** to answer questions from uploaded PDFs, performs web searches, and finds your public IP address - all through natural voice interactions.
 
@@ -49,7 +65,7 @@ A **real-time voice agent** that combines speech recognition, natural language u
 
 <br>
 
-## 🚀 Features
+# 🚀 Features
 
 - ✅ **Real-time Voice Interaction**: Speak naturally and receive instant voice responses
 - ✅ **PDF Upload & Query**: Upload documents and ask questions about their content
@@ -63,7 +79,7 @@ A **real-time voice agent** that combines speech recognition, natural language u
 
 <br>
 
-## 🏗️ Architecture
+# 🏗️ Architecture
 
 ```
 ┌─────────────┐
@@ -123,13 +139,13 @@ A **real-time voice agent** that combines speech recognition, natural language u
 
 <br>
 
-## 🗂️ Project Structure
+# 🗂️ Project Structure
 
 ```
 📂 Voice-Agent-Project
 │
 ├── 📂 src
-│   ├── main1.py                      # FastAPI server & WebSocket handler
+│   ├── main.py                      # FastAPI server & WebSocket handler
 │   │
 │   ├── 📂 components
 │   │   ├── agent.py                  # LLM agent with tool orchestration
@@ -148,7 +164,8 @@ A **real-time voice agent** that combines speech recognition, natural language u
 │   └── index.html                    # Web interface (HTML/CSS/JS)
 │
 ├── 📂 data
-│   └── college_info.pdf              # Pdf file for RAG 
+│   └── college_info.pdf              # Pdf file for RAG
+│   └── tesla_report.pdf              # Pdf file for upload and chat with 
 │
 ├── .gitignore
 ├── requirements.txt
@@ -157,7 +174,7 @@ A **real-time voice agent** that combines speech recognition, natural language u
 
 <br>
 
-## 🛠️ Tech Stack
+# 🛠️ Tech Stack
 
 **Backend Framework**
 - **FastAPI** - High-performance async web framework
@@ -188,7 +205,7 @@ A **real-time voice agent** that combines speech recognition, natural language u
 
 <br>
 
-## 🚀 Installation & Setup
+# 🚀 Installation & Setup
 
 ### Prerequisites
 - Python 3.9+
@@ -242,14 +259,15 @@ The server will start at: **`http://localhost:8000`**
 
 <br>
 
-## 🌐 Usage Guide
+# 🌐 Usage Guide
 
-### 🎬 Getting Started
+👉 [Access the web app](https://voice-agent-project-eszo.onrender.com)
 
-1. **Open the App**: Navigate to `http://localhost:8000` in your browser
+1. **Open in Chrome**: Launch the application using **Google Chrome**, which is the primary tested browser
 2. **Start Recording**: Click the **"Start Recording"** button to connect
 3. **Grant Microphone Access**: Allow browser to access your microphone
 4. **Start Talking**: The system automatically detects when you speak
+5. **Response**: Once you stop speaking the response is then generated 
 
 ### 💬 Example Interactions
 
@@ -278,7 +296,7 @@ The server will start at: **`http://localhost:8000`**
 - "From the uploaded PDF, tell me about [specific topic]"
 
 **Stop Recording**
-- Click **"Stop Recording"** to finalize the current speech and get a response
+- Click **"Stop Recording"** to finalize the current speech and disconnect the websocket
 
 ### 🎯 Tips for Best Experience
 
@@ -321,15 +339,7 @@ The server will start at: **`http://localhost:8000`**
 
 <br>
 
-## 🎨 Screenshots
-
-### Main Interface
-![Main Interface](readme_images/voice_agent_main.png)
-*Clean, modern UI with real-time status indicators*
-
-<br>
-
-## 🔍 Key Components Explained
+# 🔍 Key Components Explained
 
 ### Silero VAD Processor
 - Processes audio in 512-sample frames
@@ -356,7 +366,7 @@ The server will start at: **`http://localhost:8000`**
 
 <br>
 
-## 🎯 Future Enhancements
+# 🎯 Future Enhancements
 
 - [ ] Multi-language support for international users
 - [ ] Conversation history persistence with database
