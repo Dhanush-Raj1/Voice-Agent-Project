@@ -7,7 +7,7 @@ uvicorn==0.40.0
 numpy==2.2.6
 soundfile==0.13.1
 scipy==1.15.3
-dotenv==0.9.9
+python-dotenv==1.2.1
 requests==2.32.5
 PyMuPDF==1.26.7
 pypdf==6.5.0 
@@ -15,7 +15,7 @@ pypdf==6.5.0
 # embeddings & vector store & RAG 
 langchain==1.2.0
 langchain-community==0.4.1 
-langchain-nvidia-ai-endpoints==1.0.0
+# langchain-nvidia-ai-endpoints==1.0.0
 pinecone==7.3.0
 langchain-pinecone==0.2.13
 langchain-huggingface==1.2.0 
@@ -24,9 +24,15 @@ langchain-text-splitters==1.1.0
 faiss-cpu==1.13.2
 
 # vad 
-torch==2.9.1 
-torchaudio==2.9.1
-silero-vad==6.2.0
+# torch==2.9.1 
+# torchaudio==2.9.1
+# silero-vad==6.2.0
+
+# PyTorch CPU-only (no CUDA dependencies) 
+# for render 
+--extra-index-url https://download.pytorch.org/whl/cpu
+torch==2.5.1+cpu
+torchaudio==2.5.1+cpu
 
 # models - STT, TTS 
 faster-whisper 
