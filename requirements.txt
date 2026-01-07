@@ -37,3 +37,6 @@ edge-tts
 # external tools 
 duckduckgo-search
 tavily-python
+
+
+#-e .
