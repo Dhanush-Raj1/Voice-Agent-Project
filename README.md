@@ -339,14 +339,6 @@ The server will start at: **`http://localhost:8000`**
 
 <br>
 
-# 🎨 Screenshots
-
-### Main Interface
-![Main Interface](readme_images/voice_agent_main.png)
-*Clean, modern UI with real-time status indicators*
-
-<br>
-
 # 🔍 Key Components Explained
 
 ### Silero VAD Processor
