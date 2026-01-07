@@ -12,27 +12,27 @@
   <img src="https://img.shields.io/badge/Edge_TTS-0078D4?style=for-the-badge&logoColor=black&labelColor=white&color=0078D4" />
 </p>
 
-<h3 align="center">Real-time Voice-Powered AI Assistant with Document Intelligence and Web Search</h3>
-<h3 align="center">Talk to Your PDFs, Search the Web, and Get Instant Answers - All by Voice!</h3>
+<h3 align="center">Real-time Voice-Powered AI Assistant with Document Intelligence and Web Search</h3>  
+<h3 align="center">Talk to Your PDFs, Search the Web, and Get Instant Answers - All by Voice!</h3>  
 
 <br>
 
-## 🚀 Live Application
+# 🚀 Live Application
 🌐 The application is deployed and live
   
 👉 [Access the web app here](https://voice-agent-project-eszo.onrender.com)    
   
 > [!NOTE]
-> The voice agent requires lot of computing power as a result the agent might be slow or takes time to reload/refresh. 
-> The initial load of the web app may take 1-2 minutes. Once loaded, refresh the page to ensure all features work correctly. 
-  
+> The voice agent requires lot of computing power as a result the agent might be slow or takes time to reload/refresh.   
+> The initial load of the web app may take 1-2 minutes. Once loaded, refresh the page to ensure all features work correctly.   
+    
 > [!TIP]  
 > For the best experience, please refer to the [Usage Guide](#-usage-guide) section below to learn how to navigate and use the web app effectively.
 
 
 <br>
 
-## 🎯 Project Overview
+# 🎯 Project Overview
 
 A **real-time voice agent** that combines speech recognition, natural language understanding, and text-to-speech synthesis to create an intelligent conversational assistant. The system leverages **Retrieval-Augmented Generation (RAG)** to answer questions from uploaded PDFs, performs web searches, and finds your public IP address - all through natural voice interactions.
 
@@ -64,7 +64,7 @@ A **real-time voice agent** that combines speech recognition, natural language u
 
 <br>
 
-## 🚀 Features
+# 🚀 Features
 
 - ✅ **Real-time Voice Interaction**: Speak naturally and receive instant voice responses
 - ✅ **PDF Upload & Query**: Upload documents and ask questions about their content
@@ -78,7 +78,7 @@ A **real-time voice agent** that combines speech recognition, natural language u
 
 <br>
 
-## 🏗️ Architecture
+# 🏗️ Architecture
 
 ```
 ┌─────────────┐
@@ -138,7 +138,7 @@ A **real-time voice agent** that combines speech recognition, natural language u
 
 <br>
 
-## 🗂️ Project Structure
+# 🗂️ Project Structure
 
 ```
 📂 Voice-Agent-Project
@@ -172,7 +172,7 @@ A **real-time voice agent** that combines speech recognition, natural language u
 
 <br>
 
-## 🛠️ Tech Stack
+# 🛠️ Tech Stack
 
 **Backend Framework**
 - **FastAPI** - High-performance async web framework
@@ -203,7 +203,7 @@ A **real-time voice agent** that combines speech recognition, natural language u
 
 <br>
 
-## 🚀 Installation & Setup
+# 🚀 Installation & Setup
 
 ### Prerequisites
 - Python 3.9+
@@ -257,7 +257,7 @@ The server will start at: **`http://localhost:8000`**
 
 <br>
 
-## 🌐 Usage Guide
+# 🌐 Usage Guide
 
 👉 [Access the web app](https://voice-agent-project-eszo.onrender.com)
 
@@ -336,7 +336,7 @@ The server will start at: **`http://localhost:8000`**
 
 <br>
 
-## 🎨 Screenshots
+# 🎨 Screenshots
 
 ### Main Interface
 ![Main Interface](readme_images/voice_agent_main.png)
@@ -344,7 +344,7 @@ The server will start at: **`http://localhost:8000`**
 
 <br>
 
-## 🔍 Key Components Explained
+# 🔍 Key Components Explained
 
 ### Silero VAD Processor
 - Processes audio in 512-sample frames
@@ -371,7 +371,7 @@ The server will start at: **`http://localhost:8000`**
 
 <br>
 
-## 🎯 Future Enhancements
+# 🎯 Future Enhancements
 
 - [ ] Multi-language support for international users
 - [ ] Conversation history persistence with database
