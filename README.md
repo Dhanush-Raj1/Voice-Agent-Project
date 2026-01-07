@@ -37,7 +37,7 @@ A **real-time voice agent** that combines speech recognition, natural language u
 
 **🔍 Web Search & Knowledge Retrieval**
 - Real-time web search using **Tavily API**
-- Pre-loaded knowledge base about Madras Christian College
+- Pre-loaded knowledge base about Madras Christian College - RAG 
 - IP address lookup capability
 - Multi-tool orchestration with intelligent routing
 
@@ -54,7 +54,7 @@ A **real-time voice agent** that combines speech recognition, natural language u
 - ✅ **Real-time Voice Interaction**: Speak naturally and receive instant voice responses
 - ✅ **PDF Upload & Query**: Upload documents and ask questions about their content
 - ✅ **Web Search Integration**: Get current information from the internet
-- ✅ **College Knowledge Base**: Pre-loaded information about Madras Christian College
+- ✅ **College Knowledge Base**: Pre-loaded information about Madras Christian College- RAG 
 - ✅ **Session Memory**: Each session maintains its own conversation context
 - ✅ **Smart Voice Detection**: Automatic speech start/end detection
 - ✅ **Multi-tool Orchestration**: Intelligently routes queries to appropriate tools
