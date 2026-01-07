@@ -148,13 +148,11 @@ A **real-time voice agent** that combines speech recognition, natural language u
 │   └── index.html                    # Web interface (HTML/CSS/JS)
 │
 ├── 📂 data
-│   └── college_info.pdf              # Pre-loaded knowledge base
+│   └── college_info.pdf              # Pdf file for RAG 
 │
-├── .env                              # API keys (not in repo)
 ├── .gitignore
 ├── requirements.txt
-├── README.md
-└── setup.py
+└── README.md
 ```
 
 <br>
