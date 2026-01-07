@@ -1,5 +1,5 @@
 import edge_tts
-from utils.logger import setup_logger
+from src.utils.logger import setup_logger
 
 logger = setup_logger("tts")
 

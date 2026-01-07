@@ -3,8 +3,8 @@ import torch
 import numpy as np
 import soundfile as sf
 from groq import Groq
-from utils.config import SAMPLE_RATE, VAD_THRESHOLD, MIN_SPEECH_DURATION_MS, MIN_SILENCE_DURATION_MS, GROQ_API_KEY
-from utils.logger import setup_logger
+from src.utils.config import SAMPLE_RATE, VAD_THRESHOLD, MIN_SPEECH_DURATION_MS, MIN_SILENCE_DURATION_MS, GROQ_API_KEY
+from src.utils.logger import setup_logger
 
 logger = setup_logger("audio")
 groq_client = Groq(api_key=GROQ_API_KEY)

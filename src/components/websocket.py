@@ -1,11 +1,11 @@
 import json
 import base64
 from fastapi import WebSocket
-from components.tts import text_to_speech
-from components.audio import SileroVADProcessor, transcribe_audio
-from components.pdf_handler import SessionPDFStore
-from components.agent import process_with_agent
-from utils.logger import setup_logger
+from src.components.tts import text_to_speech
+from src.components.audio import SileroVADProcessor, transcribe_audio
+from src.components.pdf_handler import SessionPDFStore
+from src.components.agent import process_with_agent
+from src.utils.logger import setup_logger
 
 logger = setup_logger("websocket")
 
