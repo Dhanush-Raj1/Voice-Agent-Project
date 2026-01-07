@@ -1,9 +1,9 @@
 import requests
 from duckduckgo_search import DDGS
 from tavily import TavilyClient
-from components.pdf_handler import SessionPDFStore
-from utils.config import TAVILY_API_KEY
-from utils.logger import setup_logger
+from src.components.pdf_handler import SessionPDFStore
+from src.utils.config import TAVILY_API_KEY
+from src.utils.logger import setup_logger
 
 logger = setup_logger("tools")
 

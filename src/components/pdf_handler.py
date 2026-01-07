@@ -5,8 +5,8 @@ from langchain_community.vectorstores import FAISS
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_core.documents import Document
-from utils.config import CHUNK_SIZE, CHUNK_OVERLAP
-from utils.logger import setup_logger
+from src.utils.config import CHUNK_SIZE, CHUNK_OVERLAP
+from src.utils.logger import setup_logger
 
 logger = setup_logger("pdf_handler")
 
