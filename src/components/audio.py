@@ -1,4 +1,5 @@
 import io
+import os 
 import torch
 import numpy as np
 import soundfile as sf
@@ -121,16 +122,46 @@ class SileroVADProcessor:
 
 
 
-def load_vad_model():
-    """Load Silero VAD model"""
+# def load_vad_model():
+#     """Load Silero VAD model"""
 
+#     logger.info("Loading Silero VAD model...")
+#     try:
+#         model, utils = torch.hub.load(repo_or_dir='snakers4/silero-vad',
+#                                       model='silero_vad',
+#                                       force_reload=False,
+#                                       onnx=False, 
+#                                       trust_repo=True)     
+        
+#         (get_speech_timestamps, _, read_audio, *_) = utils
+        
+#         logger.info(f"✅ Silero VAD loaded (threshold: {VAD_THRESHOLD})")
+#         return model, get_speech_timestamps
+        
+#     except Exception as e:
+#         logger.error(f"Silero VAD loading failed: {e}")
+#         return None, None         # websocket won't crash but audio processing will be disabled
+
+
+# for render 
+def load_vad_model():
+    """Load Silero VAD model with local caching"""
     logger.info("Loading Silero VAD model...")
+    
     try:
-        model, utils = torch.hub.load(repo_or_dir='snakers4/silero-vad',
-                                      model='silero_vad',
-                                      force_reload=False,
-                                      onnx=False, 
-                                      trust_repo=True)    # for render 
+        # Use a persistent cache directory
+        cache_dir = os.path.expanduser("~/.cache/silero_vad")
+        os.makedirs(cache_dir, exist_ok=True)
+        
+        model, utils = torch.hub.load(
+            repo_or_dir='snakers4/silero-vad',
+            model='silero_vad',
+            force_reload=False,
+            onnx=False,
+            trust_repo=True,
+            source='github',  # explicitly set source
+            skip_validation=True  # skip git validation
+        )
         
         (get_speech_timestamps, _, read_audio, *_) = utils
         
@@ -139,7 +170,8 @@ def load_vad_model():
         
     except Exception as e:
         logger.error(f"Silero VAD loading failed: {e}")
-        return None, None         # websocket won't crash but audio processing will be disabled
+        logger.warning("⚠️ Running without VAD - audio processing disabled")
+        return None, None
 
 
 
