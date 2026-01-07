@@ -792,8 +792,13 @@
         updateStatus("Connecting...", "disconnected");
         startBtn.disabled = true;
         
-        // 🔥 FIXED: Changed from /ws/audio to /ws
-        ws = new WebSocket("ws://127.0.0.1:8000/ws");
+        // running locally 
+        // ws = new WebSocket("ws://127.0.0.1:8000/ws");
+
+        // Detect if running locally or on Render
+        const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+        const wsHost = window.location.host; // Gets the current host automatically
+        ws = new WebSocket(`${wsProtocol}//${wsHost}/ws`);
         ws.binaryType = "arraybuffer";
 
         ws.onmessage = (event) => {
