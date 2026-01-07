@@ -17,6 +17,21 @@
 
 <br>
 
+## 🚀 Live Application
+🌐 The application is deployed and live
+  
+👉 [Access the web app here](https://voice-agent-project-eszo.onrender.com)    
+  
+> [!NOTE]
+> The voice agent requires lot of computing power as a result the agent might be slow or takes time to reload/refresh. 
+> The initial load of the web app may take 1-2 minutes. Once loaded, refresh the page to ensure all features work correctly. 
+  
+> [!TIP]  
+> For the best experience, please refer to the [Usage Guide](#-usage-guide) section below to learn how to navigate and use the web app effectively.
+
+
+<br>
+
 ## 🎯 Project Overview
 
 A **real-time voice agent** that combines speech recognition, natural language understanding, and text-to-speech synthesis to create an intelligent conversational assistant. The system leverages **Retrieval-Augmented Generation (RAG)** to answer questions from uploaded PDFs, performs web searches, and finds your public IP address - all through natural voice interactions.
@@ -244,12 +259,12 @@ The server will start at: **`http://localhost:8000`**
 
 ## 🌐 Usage Guide
 
-### 🎬 Getting Started
+👉 [Access the web app](https://voice-agent-project-eszo.onrender.com)
 
-1. **Open the App**: Navigate to `http://localhost:8000` in your browser
-2. **Start Recording**: Click the **"Start Recording"** button to connect
-3. **Grant Microphone Access**: Allow browser to access your microphone
-4. **Start Talking**: The system automatically detects when you speak
+1. **Start Recording**: Click the **"Start Recording"** button to connect
+2. **Grant Microphone Access**: Allow browser to access your microphone
+3. **Start Talking**: The system automatically detects when you speak
+4. **Response**: Once you stop speaking the response is then generated 
 
 ### 💬 Example Interactions
 
@@ -278,7 +293,7 @@ The server will start at: **`http://localhost:8000`**
 - "From the uploaded PDF, tell me about [specific topic]"
 
 **Stop Recording**
-- Click **"Stop Recording"** to finalize the current speech and get a response
+- Click **"Stop Recording"** to finalize the current speech and disconnect the websocket
 
 ### 🎯 Tips for Best Experience
 
