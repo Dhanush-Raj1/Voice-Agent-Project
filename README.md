@@ -75,44 +75,44 @@ A **real-time voice agent** that combines speech recognition, natural language u
 ┌─────────────────────────────────┐
 │      FastAPI + WebSocket        │
 │                                 │
-│  ┌──────────────────────────┐  │
-│  │   Silero VAD Processor   │  │
-│  │  (Speech Detection)      │  │
-│  └────────┬─────────────────┘  │
+│  ┌──────────────────────────┐   │
+│  │   Silero VAD Processor   │   │
+│  │  (Speech Detection)      │   │
+│  └────────┬─────────────────┘   │
 │           │ Speech Segments     │
 │           ↓                     │
-│  ┌──────────────────────────┐  │
-│  │  Whisper STT (Groq API)  │  │
-│  │  (Speech → Text)         │  │
-│  └────────┬─────────────────┘  │
+│  ┌──────────────────────────┐   │
+│  │  Whisper STT (Groq API)  │   │
+│  │  (Speech → Text)         │   │
+│  └────────┬─────────────────┘   │
 │           │ Transcript          │
 │           ↓                     │
-│  ┌──────────────────────────┐  │
-│  │   LLM Agent              │  │
-│  │   (Qwen 3 32B Tool Call) │  │
-│  │   (Llama 3.3 70B Final)  │  │
-│  └────────┬─────────────────┘  │
+│  ┌──────────────────────────┐   │
+│  │   LLM Agent              │   │
+│  │   (Qwen 3 32B Tool Call) │   │
+│  │   (Llama 3.3 70B Final)  │   │
+│  └────────┬─────────────────┘   │
 │           │                     │
-│     ┌─────┴─────┐              │
-│     │   Tools   │              │
-│     │           │              │
-│  ┌──┴───────────┴──┐           │
-│  │ • Tavily Search │           │
-│  │ • PDF Query     │           │
-│  │ • College Info  │           │
-│  │ • IP Lookup     │           │
-│  └──┬───────────┬──┘           │
+│     ┌─────┴─────┐               │
+│     │   Tools   │               │
+│     │           │               │
+│  ┌──┴───────────┴──┐            │
+│  │ • Tavily Search │            │
+│  │ • PDF Query     │            │
+│  │ • College Info  │            │
+│  │ • IP Lookup     │            │
+│  └──┬───────────┬──┘            │
 │     │           │               │
 │     ↓           ↓               │
-│  ┌─────────┐ ┌──────────────┐ │
-│  │Pinecone │ │ FAISS        │ │
-│  │Vector DB│ │(Session PDFs)│ │
-│  └─────────┘ └──────────────┘ │
+│  ┌─────────┐ ┌──────────────┐   │
+│  │Pinecone │ │ FAISS        │   │
+│  │Vector DB│ │(Session PDFs)│   │
+│  └─────────┘ └──────────────┘   │
 │                                 │
-│  ┌──────────────────────────┐  │
-│  │    Edge TTS Engine       │  │
-│  │    (Text → Speech)       │  │
-│  └────────┬─────────────────┘  │
+│  ┌──────────────────────────┐   │
+│  │    Edge TTS Engine       │   │
+│  │    (Text → Speech)       │   │
+│  └────────┬─────────────────┘   │ 
 │           │ Audio (Base64)      │
 └───────────┼─────────────────────┘
             ↓
