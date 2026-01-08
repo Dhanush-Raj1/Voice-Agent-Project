@@ -65,7 +65,8 @@ async def handle_websocket(websocket: WebSocket, vad_model, vad_utils, embedding
                         
                         # 2. STOP command
                         # user clicks "Stop" in the UI, VAD finalizes, transcribes and then response is generated
-                        elif msg["text"] == "STOP":                   
+                        #elif msg["text"] == "STOP":     
+                        elif data.get("type") == "stop":              
                             logger.info("Stop command received")
                             
                             if vad_processor:
@@ -101,9 +102,10 @@ async def handle_websocket(websocket: WebSocket, vad_model, vad_utils, embedding
                             
                             # for render to keep the websocket alive 
                             # Reset VAD for next recording session
-                            if vad_processor:
-                                vad_processor.reset()
+                            #if vad_processor:
+                            vad_processor.reset()
                             segment_count = 0
+                            logger.info("✅ VAD reset, ready for next recording")
                             
                             await websocket.send_json({"type": "stop_acknowledged",
                                                        "message": "Ready for next recording"})   
@@ -112,17 +114,18 @@ async def handle_websocket(websocket: WebSocket, vad_model, vad_utils, embedding
                     # if text message is NOT valid JSON, and that text is "STOP", then exit the WebSocket loop(while True loop)
                     # and end the session
                     except json.JSONDecodeError:
-                        if msg["text"] == "STOP":
-                            # do not close websocket for render 
-                            # break
+                        # if msg["text"] == "STOP":
+                        #     # do not close websocket for render 
+                        #     # break
 
-                            # for render to keep the websocket alive 
-                            # Reset VAD for next recording session
-                            if vad_processor:
-                                vad_processor.reset()
-                            segment_count = 0
+                        #     # for render to keep the websocket alive 
+                        #     # Reset VAD for next recording session
+                        #     if vad_processor:
+                        #         vad_processor.reset()
+                        #     segment_count = 0
                             
-                            continue
+                        #     continue
+                        pass
 
 
                 # Handle audio bytes

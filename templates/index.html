@@ -492,6 +492,7 @@
     let source;
     let stream;
     let isRecording = false;
+    let isProcessing = false;
 
     const chatArea = document.getElementById('chatArea');
     const statusBadge = document.getElementById('statusBadge');
@@ -787,17 +788,56 @@
       }
     }
 
+    function cleanupAudioResources() {
+      console.log('🧹 Cleaning up audio resources');
+      
+      if (processor) {
+        try {
+          processor.disconnect();
+          source.disconnect();
+        } catch (e) {
+          console.warn('Audio disconnect warning:', e);
+        }
+        processor = null;
+        source = null;
+      }
+      
+      if (stream) {
+        stream.getTracks().forEach(track => {
+          track.stop();
+          console.log('🛑 Stopped audio track:', track.kind);
+        });
+        stream = null;
+      }
+      
+      if (audioContext && audioContext.state !== 'closed') {
+        audioContext.close().then(() => {
+          console.log('🔇 AudioContext closed');
+        }).catch(e => {
+          console.warn('AudioContext close warning:', e);
+        });
+        audioContext = null;
+      }
+    }
+
     startBtn.onclick = async () => {
       try {
+        // If already connected, just resume recording
+        if (ws && ws.readyState === WebSocket.OPEN) {
+          console.log('📡 WebSocket already connected, resuming recording...');
+          isRecording = true;
+          updateStatus("Recording...", "recording");
+          stopBtn.disabled = false;
+          startBtn.disabled = true;
+          return;
+        }
+
         updateStatus("Connecting...", "disconnected");
         startBtn.disabled = true;
         
-        // running locally 
-        // ws = new WebSocket("ws://127.0.0.1:8000/ws");
-
         // Detect if running locally or on Render
         const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-        const wsHost = window.location.host; // Gets the current host automatically
+        const wsHost = window.location.host;
         ws = new WebSocket(`${wsProtocol}//${wsHost}/ws`);
         ws.binaryType = "arraybuffer";
 
@@ -820,17 +860,20 @@
             console.log('🤖 Agent response received');
             console.log('📝 Text:', data.text);
             console.log('🎵 Has audio:', !!data.audio);
-            if (data.audio) {
-              console.log('🎵 Audio data length:', data.audio.length);
-            }
             
             finalizeUserMessage();
             removeTypingIndicator();
+            isProcessing = false;
+            
+            // Re-enable start button when response is received
+            if (!isRecording) {
+              startBtn.disabled = false;
+              updateStatus("Ready", "disconnected");
+            }
             
             if (data.text.trim()) {
               addMessage(data.text, 'agent');
 
-              // Play audio if available
               if (data.audio) {
                 console.log('🔊 Attempting to play audio...');
                 playAudio(data.audio);
@@ -852,6 +895,10 @@
             } else {
               addMessage(`Failed to upload "${data.filename}": ${data.error}`, 'agent');
             }
+            
+          } else if (data.type === "stop_acknowledged") {
+            console.log('✅ Stop acknowledged by server');
+            isProcessing = false;
           }
         };
 
@@ -865,34 +912,42 @@
           
           connectionWarning.style.display = 'none';
 
-          stream = await navigator.mediaDevices.getUserMedia({ 
-            audio: {
-              echoCancellation: true,
-              noiseSuppression: true,
-              autoGainControl: true
-            } 
-          });
+          // Initialize audio capture
+          try {
+            stream = await navigator.mediaDevices.getUserMedia({ 
+              audio: {
+                echoCancellation: true,
+                noiseSuppression: true,
+                autoGainControl: true
+              } 
+            });
 
-          audioContext = new AudioContext();
-          const sourceSampleRate = audioContext.sampleRate;
+            audioContext = new AudioContext();
+            const sourceSampleRate = audioContext.sampleRate;
 
-          source = audioContext.createMediaStreamSource(stream);
-          processor = audioContext.createScriptProcessor(4096, 1, 1);
+            source = audioContext.createMediaStreamSource(stream);
+            processor = audioContext.createScriptProcessor(4096, 1, 1);
 
-          processor.onaudioprocess = (e) => {
-            if (!isRecording) return;
+            processor.onaudioprocess = (e) => {
+              if (!isRecording) return;
+              
+              const input = e.inputBuffer.getChannelData(0);
+              const resampled = resample(input, sourceSampleRate, 16000);
+              const pcm = floatTo16BitPCM(resampled);
+
+              if (ws.readyState === WebSocket.OPEN) {
+                ws.send(pcm);
+              }
+            };
+
+            source.connect(processor);
+            processor.connect(audioContext.destination);
             
-            const input = e.inputBuffer.getChannelData(0);
-            const resampled = resample(input, sourceSampleRate, 16000);
-            const pcm = floatTo16BitPCM(resampled);
-
-            if (ws.readyState === WebSocket.OPEN) {
-              ws.send(pcm);
-            }
-          };
-
-          source.connect(processor);
-          processor.connect(audioContext.destination);
+            console.log('🎤 Audio capture initialized');
+          } catch (error) {
+            console.error('❌ Audio initialization failed:', error);
+            alert(`Audio error: ${error.message}`);
+          }
         };
 
         ws.onerror = (error) => {
@@ -902,8 +957,13 @@
 
         ws.onclose = () => {
           console.log('🔌 WebSocket closed');
+          
+          // Clean up audio resources
+          cleanupAudioResources();
+          
           updateStatus("Disconnected", "disconnected");
           isRecording = false;
+          isProcessing = false;
           startBtn.disabled = false;
           stopBtn.disabled = true;
           uploadBtn.disabled = true;
@@ -921,27 +981,40 @@
     };
 
     stopBtn.onclick = () => {
+      console.log('⏸️ Stop button clicked');
+      
+      if (isProcessing) {
+        console.log('⚠️ Already processing, ignoring stop');
+        return;
+      }
+      
       isRecording = false;
+      isProcessing = true;
       updateStatus("Processing...", "disconnected");
+      stopBtn.disabled = true;
       
+      // Send stop signal to backend
       if (ws && ws.readyState === WebSocket.OPEN) {
-        ws.send("STOP");
+        try {
+          ws.send(JSON.stringify({ type: "stop" }));
+          console.log('📤 Stop signal sent to backend');
+        } catch (error) {
+          console.error('❌ Failed to send stop signal:', error);
+        }
       }
       
-      if (processor) {
-        processor.disconnect();
-        source.disconnect();
-      }
-      
-      if (stream) {
-        stream.getTracks().forEach(t => t.stop());
-      }
-      
-      if (audioContext) {
-        audioContext.close();
-      }
-      
+      // Show typing indicator
       showTypingIndicator();
+      
+      // Re-enable start button after processing completes (with timeout as backup)
+      setTimeout(() => {
+        if (isProcessing) {
+          console.log('⚠️ Processing timeout, re-enabling start button');
+          isProcessing = false;
+          startBtn.disabled = false;
+          removeTypingIndicator();
+        }
+      }, 10000); // 10 second timeout
     };
   </script>
 </body>
