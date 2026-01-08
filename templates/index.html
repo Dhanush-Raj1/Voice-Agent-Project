@@ -899,6 +899,9 @@
           } else if (data.type === "stop_acknowledged") {
             console.log('✅ Stop acknowledged by server');
             isProcessing = false;
+            removeTypingIndicator();
+            startBtn.disabled = false;                    // new changes
+            updateStatus("Ready", "disconnected");        // new changes 
           }
         };
 
