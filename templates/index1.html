@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Voice Agent - PDF Q&A</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+    
+    .container {
+      width: 100%;
+      max-width: 900px;
+      height: 90vh;
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    
+    .header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 20px 25px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+    
+    .header-icon {
+      width: 45px;
+      height: 45px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+    }
+    
+    .header-title {
+      font-size: 20px;
+      font-weight: 600;
+    }
+    
+    .header-subtitle {
+      font-size: 13px;
+      opacity: 0.9;
+      margin-top: 2px;
+    }
+    
+    .status-badge {
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    
+    .status-badge.disconnected {
+      background: rgba(255,255,255,0.2);
+    }
+    
+    .status-badge.recording {
+      background: #ff4757;
+      animation: pulse 2s infinite;
+    }
+    
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: white;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+    
+    .pdf-section {
+      padding: 15px 25px;
+      background: #f8f9fa;
+      border-bottom: 1px solid #e0e0e0;
+      display: flex;
+      gap: 15px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    
+    .upload-btn {
+      padding: 10px 20px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.3s ease;
+    }
+    
+    .upload-btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    }
+    
+    .upload-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+      background: #ccc;
+    }
+    
+    #pdfInput {
+      display: none;
+    }
+    
+    .pdf-list {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      flex: 1;
+    }
+    
+    .pdf-tag {
+      padding: 8px 15px;
+      background: white;
+      border: 2px solid #667eea;
+      border-radius: 20px;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      animation: slideIn 0.3s ease;
+    }
+    
+    .pdf-tag.processing {
+      border-color: #ffa502;
+      background: #fff3cd;
+    }
+    
+    .pdf-tag.ready {
+      border-color: #00b894;
+      background: #d4edda;
+    }
+    
+    .pdf-tag.failed {
+      border-color: #d63031;
+      background: #f8d7da;
+    }
+    
+    .connection-warning {
+      padding: 10px 15px;
+      background: #fff3cd;
+      border: 1px solid #ffc107;
+      border-radius: 10px;
+      color: #856404;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    
+    .chat-area {
+      flex: 1;
+      overflow-y: auto;
+      padding: 25px;
+      background: #f5f5f5;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    
+    .chat-area::-webkit-scrollbar {
+      width: 8px;
+    }
+    
+    .chat-area::-webkit-scrollbar-track {
+      background: #f1f1f1;
+    }
+    
+    .chat-area::-webkit-scrollbar-thumb {
+      background: #888;
+      border-radius: 4px;
+    }
+    
+    .message-container {
+      display: flex;
+      margin-bottom: 15px;
+      animation: slideIn 0.3s ease;
+    }
+    
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .message-container.user {
+      justify-content: flex-start;
+    }
+    
+    .message-container.user .message-bubble {
+      background: white;
+      color: #333;
+      border-radius: 18px 18px 18px 4px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    
+    .message-container.agent {
+      justify-content: flex-end;
+    }
+    
+    .message-container.agent .message-bubble {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border-radius: 18px 18px 4px 18px;
+      box-shadow: 0 2px 5px rgba(102, 126, 234, 0.4);
+    }
+    
+    .message-bubble {
+      max-width: 70%;
+      padding: 12px 18px;
+      position: relative;
+      word-wrap: break-word;
+      line-height: 1.5;
+    }
+    
+    .message-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      opacity: 0.8;
+    }
+    
+    .message-text {
+      font-size: 15px;
+    }
+    
+    .message-time {
+      font-size: 10px;
+      opacity: 0.6;
+      margin-top: 6px;
+      text-align: right;
+    }
+    
+    .typing-indicator {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 12px 18px;
+      background: white;
+      border-radius: 18px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      max-width: 80px;
+    }
+    
+    .typing-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #999;
+      animation: typing 1.4s infinite;
+    }
+    
+    .typing-dot:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+    
+    .typing-dot:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+    
+    @keyframes typing {
+      0%, 60%, 100% {
+        transform: translateY(0);
+        opacity: 0.7;
+      }
+      30% {
+        transform: translateY(-10px);
+        opacity: 1;
+      }
+    }
+    
+    .empty-state {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #999;
+      text-align: center;
+      padding: 40px;
+    }
+    
+    .empty-state-icon {
+      font-size: 64px;
+      margin-bottom: 20px;
+      opacity: 0.5;
+    }
+    
+    .empty-state-text {
+      font-size: 18px;
+      font-weight: 500;
+      margin-bottom: 10px;
+    }
+    
+    .empty-state-subtext {
+      font-size: 14px;
+      color: #aaa;
+    }
+    
+    .controls {
+      padding: 20px 25px;
+      background: white;
+      border-top: 1px solid #e0e0e0;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+    
+    button.control-btn {
+      padding: 14px 28px;
+      border: none;
+      border-radius: 25px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex: 1;
+    }
+    
+    button.control-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    
+    #startBtn {
+      background: linear-gradient(135deg, #00b894 0%, #00cec9 100%);
+      color: white;
+      box-shadow: 0 4px 15px rgba(0, 184, 148, 0.3);
+    }
+    
+    #startBtn:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 184, 148, 0.4);
+    }
+    
+    #stopBtn {
+      background: linear-gradient(135deg, #ff7675 0%, #d63031 100%);
+      color: white;
+      box-shadow: 0 4px 15px rgba(255, 118, 117, 0.3);
+    }
+    
+    #stopBtn:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(255, 118, 117, 0.4);
+    }
+    
+    .helper-text {
+      padding: 12px 25px;
+      background: #e3f2fd;
+      border-top: 1px solid #bbdefb;
+      color: #1976d2;
+      font-size: 13px;
+      text-align: center;
+    }
+    
+    .message-bubble.speaking {
+      animation: pulse-border 1.5s infinite;
+    }
+
+    @keyframes pulse-border {
+      0%, 100% { box-shadow: 0 2px 5px rgba(102, 126, 234, 0.4); }
+      50% { box-shadow: 0 2px 15px rgba(102, 126, 234, 0.8); }
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        height: 95vh;
+        border-radius: 0;
+      }
+      
+      .message-bubble {
+        max-width: 85%;
+      }
+      
+      .header-subtitle {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="header-left">
+        <div class="header-icon">🎤</div>
+        <div>
+          <div class="header-title">Voice Agent + PDF Q&A</div>
+          <div class="header-subtitle">Powered by AI</div>
+        </div>
+      </div>
+      <div id="statusBadge" class="status-badge disconnected">
+        <span class="status-dot"></span>
+        <span id="statusText">Disconnected</span>
+      </div>
+    </div>
+    
+    <div class="pdf-section">
+      <input type="file" id="pdfInput" accept=".pdf" multiple>
+      <button class="upload-btn" id="uploadBtn" disabled title="Connect first by clicking 'Start Recording'">
+        <span>📁</span>
+        <span>Upload PDF</span>
+      </button>
+      <div class="pdf-list" id="pdfList">
+        <span style="color: #999; font-size: 13px;">No PDFs uploaded</span>
+      </div>
+    </div>
+    
+    <div class="chat-area" id="chatArea">
+      <div class="connection-warning" id="connectionWarning">
+        ⚠️ Click "Start Recording" below to connect, then you can upload PDFs
+      </div>
+      <div class="empty-state">
+        <div class="empty-state-icon">💬</div>
+        <div class="empty-state-text">Start a Conversation</div>
+        <div class="empty-state-subtext">Upload PDFs and ask questions, or just chat!</div>
+      </div>
+    </div>
+    
+    <div class="helper-text">
+      💡 Try: "What's my IP?", "Search for AI news", "Tell me about MCC", or "Summarize my PDF"
+    </div>
+    
+    <div class="controls">
+      <button class="control-btn" id="startBtn">
+        <span class="button-icon">🎙️</span>
+        <span>Start Recording</span>
+      </button>
+      <button class="control-btn" id="stopBtn" disabled>
+        <span class="button-icon">⏹️</span>
+        <span>Stop Recording</span>
+      </button>
+    </div>
+  </div>
+
+  <script>
+    let ws;
+    let audioContext;
+    let processor;
+    let source;
+    let stream;
+    let isRecording = false;
+
+    const chatArea = document.getElementById('chatArea');
+    const statusBadge = document.getElementById('statusBadge');
+    const statusText = document.getElementById('statusText');
+    const startBtn = document.getElementById('startBtn');
+    const stopBtn = document.getElementById('stopBtn');
+    const uploadBtn = document.getElementById('uploadBtn');
+    const pdfInput = document.getElementById('pdfInput');
+    const pdfList = document.getElementById('pdfList');
+    const connectionWarning = document.getElementById('connectionWarning');
+
+    let currentUserMessage = null;
+    let lastChunkText = "";
+    let typingIndicator = null;
+
+    uploadBtn.onclick = () => {
+      if (!ws || ws.readyState !== WebSocket.OPEN) {
+        alert('⚠️ Please click "Start Recording" first to connect to the server!');
+        return;
+      }
+      pdfInput.click();
+    };
+
+    pdfInput.onchange = async (e) => {
+      const files = e.target.files;
+      
+      if (!files.length) return;
+
+      if (!ws || ws.readyState !== WebSocket.OPEN) {
+        alert('⚠️ Connection lost! Please restart recording.');
+        return;
+      }
+
+      for (let file of files) {
+        if (file.type !== 'application/pdf') {
+          alert(`❌ ${file.name} is not a PDF file`);
+          continue;
+        }
+
+        addPDFTag(file.name, 'processing', '⏳ Uploading...');
+
+        const reader = new FileReader();
+        
+        reader.onload = (event) => {
+          const base64Data = event.target.result.split(',')[1];
+          const message = JSON.stringify({
+            type: 'upload_pdf',
+            filename: file.name,
+            data: base64Data
+          });
+          ws.send(message);
+        };
+        
+        reader.onerror = (error) => {
+          console.error('File read error:', error);
+          addPDFTag(file.name, 'failed', '❌ Read failed');
+        };
+        
+        reader.readAsDataURL(file);
+      }
+
+      pdfInput.value = '';
+    };
+
+    function addPDFTag(filename, status = 'processing', info = '') {
+      const noFileMsg = pdfList.querySelector('span');
+      if (noFileMsg) {
+        pdfList.innerHTML = '';
+      }
+
+      let existingTag = document.querySelector(`[data-filename="${filename}"]`);
+      
+      if (existingTag) {
+        existingTag.className = `pdf-tag ${status}`;
+        existingTag.querySelector('.pdf-tag-info').textContent = info;
+        return;
+      }
+
+      const tag = document.createElement('div');
+      tag.className = `pdf-tag ${status}`;
+      tag.setAttribute('data-filename', filename);
+      
+      const icon = status === 'processing' ? '⏳' : status === 'ready' ? '✅' : '❌';
+      
+      tag.innerHTML = `
+        <span class="pdf-tag-icon">${icon}</span>
+        <span class="pdf-tag-name" title="${filename}">${filename}</span>
+        <span class="pdf-tag-info">${info}</span>
+      `;
+      
+      pdfList.appendChild(tag);
+    }
+
+    function updateStatus(text, status) {
+      statusText.textContent = text;
+      statusBadge.className = `status-badge ${status}`;
+    }
+
+    function clearEmptyState() {
+      const emptyState = chatArea.querySelector('.empty-state');
+      if (emptyState) {
+        emptyState.remove();
+      }
+    }
+
+    function getCurrentTime() {
+      const now = new Date();
+      return now.toLocaleTimeString('en-US', { 
+        hour: '2-digit', 
+        minute: '2-digit' 
+      });
+    }
+
+    function addMessage(text, type) {
+      clearEmptyState();
+      
+      const messageContainer = document.createElement('div');
+      messageContainer.className = `message-container ${type}`;
+      
+      const messageBubble = document.createElement('div');
+      messageBubble.className = 'message-bubble';
+      
+      const messageHeader = document.createElement('div');
+      messageHeader.className = 'message-header';
+      
+      if (type === 'user') {
+        messageHeader.innerHTML = '👤 You';
+      } else if (type === 'agent') {
+        messageHeader.innerHTML = '🤖 Agent';
+      }
+      
+      const messageText = document.createElement('div');
+      messageText.className = 'message-text';
+      messageText.textContent = text;
+      
+      const messageTime = document.createElement('div');
+      messageTime.className = 'message-time';
+      messageTime.textContent = getCurrentTime();
+      
+      messageBubble.appendChild(messageHeader);
+      messageBubble.appendChild(messageText);
+      messageBubble.appendChild(messageTime);
+      messageContainer.appendChild(messageBubble);
+      
+      chatArea.appendChild(messageContainer);
+      chatArea.scrollTop = chatArea.scrollHeight;
+      
+      return messageContainer;
+    }
+
+    function updateUserMessage(text) {
+      if (!currentUserMessage) {
+        currentUserMessage = addMessage(text, 'user');
+        lastChunkText = text;
+      } else {
+        const messageText = currentUserMessage.querySelector('.message-text');
+        const messageTime = currentUserMessage.querySelector('.message-time');
+        messageText.textContent = text;
+        messageTime.textContent = getCurrentTime();
+        lastChunkText = text;
+      }
+      chatArea.scrollTop = chatArea.scrollHeight;
+    }
+
+    function finalizeUserMessage() {
+      if (currentUserMessage) {
+        console.log("Finalizing user message:", lastChunkText);
+        currentUserMessage = null;
+        lastChunkText = "";
+      }
+    }
+
+    function showTypingIndicator() {
+      clearEmptyState();
+      removeTypingIndicator();
+      
+      const container = document.createElement('div');
+      container.className = 'message-container agent';
+      container.id = 'typingIndicator';
+      
+      const indicator = document.createElement('div');
+      indicator.className = 'typing-indicator';
+      indicator.innerHTML = `
+        <div class="typing-dot"></div>
+        <div class="typing-dot"></div>
+        <div class="typing-dot"></div>
+      `;
+      
+      container.appendChild(indicator);
+      chatArea.appendChild(container);
+      chatArea.scrollTop = chatArea.scrollHeight;
+      
+      typingIndicator = container;
+    }
+
+    function removeTypingIndicator() {
+      if (typingIndicator) {
+        typingIndicator.remove();
+        typingIndicator = null;
+      }
+    }
+
+    function floatTo16BitPCM(float32Array) {
+      const buffer = new ArrayBuffer(float32Array.length * 2);
+      const view = new DataView(buffer);
+      let offset = 0;
+
+      for (let i = 0; i < float32Array.length; i++, offset += 2) {
+        let sample = Math.max(-1, Math.min(1, float32Array[i]));
+        view.setInt16(offset, sample < 0 ? sample * 0x8000 : sample * 0x7fff, true);
+      }
+      return buffer;
+    }
+
+    function resample(audioData, sourceSampleRate, targetSampleRate = 16000) {
+      if (sourceSampleRate === targetSampleRate) {
+        return audioData;
+      }
+      
+      const ratio = sourceSampleRate / targetSampleRate;
+      const outputLength = Math.round(audioData.length / ratio);
+      const output = new Float32Array(outputLength);
+      
+      for (let i = 0; i < outputLength; i++) {
+        const srcIndex = i * ratio;
+        const srcIndexFloor = Math.floor(srcIndex);
+        const t = srcIndex - srcIndexFloor;
+        
+        const sample1 = audioData[srcIndexFloor] || 0;
+        const sample2 = audioData[srcIndexFloor + 1] || sample1;
+        
+        output[i] = sample1 + (sample2 - sample1) * t;
+      }
+      
+      return output;
+    }
+
+    function playAudio(base64Audio) {
+      try {
+        console.log('🔊 playAudio called');
+        console.log('📦 Audio data length:', base64Audio ? base64Audio.length : 0);
+        
+        if (!base64Audio) {
+          console.error('❌ No audio data provided');
+          return;
+        }
+
+        // Convert base64 to blob
+        const binaryString = atob(base64Audio);
+        console.log('✅ Base64 decoded, size:', binaryString.length, 'bytes');
+        
+        const bytes = new Uint8Array(binaryString.length);
+        for (let i = 0; i < binaryString.length; i++) {
+          bytes[i] = binaryString.charCodeAt(i);
+        }
+        
+        const blob = new Blob([bytes], { type: 'audio/mpeg' });
+        console.log('✅ Blob created, size:', blob.size, 'bytes');
+
+        // Create and play audio
+        const audioUrl = URL.createObjectURL(blob);
+        console.log('✅ Audio URL created:', audioUrl);
+        
+        const audio = new Audio(audioUrl);
+        
+        audio.onloadedmetadata = () => {
+          console.log('✅ Audio metadata loaded, duration:', audio.duration, 'seconds');
+        };
+        
+        audio.onplay = () => {
+          console.log('▶️  Audio started playing');
+        };
+
+        audio.onended = () => {
+          console.log('⏹️  Audio finished playing');
+          URL.revokeObjectURL(audioUrl);
+        };
+        
+        audio.onerror = (e) => {
+          console.error('❌ Audio playback error:', e);
+          console.error('Audio error code:', audio.error?.code);
+          console.error('Audio error message:', audio.error?.message);
+        };
+
+        audio.play().then(() => {
+          console.log('✅ Audio.play() promise resolved');
+        }).catch(err => {
+          console.error('❌ Audio.play() promise rejected:', err);
+        });
+
+      } catch (error) {
+        console.error('❌ Exception in playAudio:', error);
+      }
+    }
+
+    startBtn.onclick = async () => {
+      try {
+        updateStatus("Connecting...", "disconnected");
+        startBtn.disabled = true;
+        
+        // running locally 
+        // ws = new WebSocket("ws://127.0.0.1:8000/ws");
+
+        // Detect if running locally or on Render
+        const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+        const wsHost = window.location.host; // Gets the current host automatically
+        ws = new WebSocket(`${wsProtocol}//${wsHost}/ws`);
+        ws.binaryType = "arraybuffer";
+
+        ws.onmessage = (event) => {
+          const data = JSON.parse(event.data);
+          console.log("📨 Received from backend:", data);
+          
+          if (data.type === "partial_transcript") {
+            if (data.text.trim()) {
+              updateUserMessage(data.text);
+            }
+            
+          } else if (data.type === "final_transcript") {
+            if (data.text.trim()) {
+              updateUserMessage(data.text);
+            }
+            finalizeUserMessage();
+            
+          } else if (data.type === "agent_response") {
+            console.log('🤖 Agent response received');
+            console.log('📝 Text:', data.text);
+            console.log('🎵 Has audio:', !!data.audio);
+            if (data.audio) {
+              console.log('🎵 Audio data length:', data.audio.length);
+            }
+            
+            finalizeUserMessage();
+            removeTypingIndicator();
+            
+            if (data.text.trim()) {
+              addMessage(data.text, 'agent');
+
+              // Play audio if available
+              if (data.audio) {
+                console.log('🔊 Attempting to play audio...');
+                playAudio(data.audio);
+              } else {
+                console.warn('⚠️  No audio data in response');
+              }
+            }
+            
+          } else if (data.type === "pdf_uploaded") {
+            const status = data.status === 'ready' ? 'ready' : 'failed';
+            const info = status === 'ready' 
+              ? `✅ ${data.chunks} chunks, ${data.pages} pages` 
+              : `❌ ${data.error || 'Failed'}`;
+            
+            addPDFTag(data.filename, status, info);
+            
+            if (status === 'ready') {
+              addMessage(`PDF "${data.filename}" uploaded successfully! You can now ask questions about it.`, 'agent');
+            } else {
+              addMessage(`Failed to upload "${data.filename}": ${data.error}`, 'agent');
+            }
+          }
+        };
+
+        ws.onopen = async () => {
+          console.log('✅ WebSocket connected!');
+          updateStatus("Recording...", "recording");
+          isRecording = true;
+          stopBtn.disabled = false;
+          uploadBtn.disabled = false;
+          uploadBtn.title = 'Upload PDF files';
+          
+          connectionWarning.style.display = 'none';
+
+          stream = await navigator.mediaDevices.getUserMedia({ 
+            audio: {
+              echoCancellation: true,
+              noiseSuppression: true,
+              autoGainControl: true
+            } 
+          });
+
+          audioContext = new AudioContext();
+          const sourceSampleRate = audioContext.sampleRate;
+
+          source = audioContext.createMediaStreamSource(stream);
+          processor = audioContext.createScriptProcessor(4096, 1, 1);
+
+          processor.onaudioprocess = (e) => {
+            if (!isRecording) return;
+            
+            const input = e.inputBuffer.getChannelData(0);
+            const resampled = resample(input, sourceSampleRate, 16000);
+            const pcm = floatTo16BitPCM(resampled);
+
+            if (ws.readyState === WebSocket.OPEN) {
+              ws.send(pcm);
+            }
+          };
+
+          source.connect(processor);
+          processor.connect(audioContext.destination);
+        };
+
+        ws.onerror = (error) => {
+          console.error("❌ WebSocket error:", error);
+          updateStatus("Error", "disconnected");
+        };
+
+        ws.onclose = () => {
+          console.log('🔌 WebSocket closed');
+          updateStatus("Disconnected", "disconnected");
+          isRecording = false;
+          startBtn.disabled = false;
+          stopBtn.disabled = true;
+          uploadBtn.disabled = true;
+          uploadBtn.title = 'Connect first by clicking "Start Recording"';
+          finalizeUserMessage();
+          removeTypingIndicator();
+          connectionWarning.style.display = 'flex';
+        };
+
+      } catch (error) {
+        console.error("❌ Error:", error);
+        alert(`Error: ${error.message}`);
+        startBtn.disabled = false;
+      }
+    };
+
+    stopBtn.onclick = () => {
+      isRecording = false;
+      updateStatus("Processing...", "disconnected");
+      
+      if (ws && ws.readyState === WebSocket.OPEN) {
+        ws.send("STOP");
+      }
+      
+      if (processor) {
+        processor.disconnect();
+        source.disconnect();
+      }
+      
+      if (stream) {
+        stream.getTracks().forEach(t => t.stop());
+      }
+      
+      if (audioContext) {
+        audioContext.close();
+      }
+      
+      showTypingIndicator();
+    };
+  </script>
+</body>
+</html>
