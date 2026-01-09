@@ -493,6 +493,7 @@
     let stream;
     let isRecording = false;
     let isProcessing = false;
+    let keepAliveInterval = null;
 
     const chatArea = document.getElementById('chatArea');
     const statusBadge = document.getElementById('statusBadge');
@@ -844,6 +845,12 @@
         ws.onmessage = (event) => {
           const data = JSON.parse(event.data);
           console.log("📨 Received from backend:", data);
+
+          // Handle pong (keepalive response)
+          if (data.type === "pong") {
+            console.log('🏓 Pong received');
+            return;
+          }
           
           if (data.type === "partial_transcript") {
             if (data.text.trim()) {
@@ -915,6 +922,19 @@
           
           connectionWarning.style.display = 'none';
 
+          // Start keepalive ping every 30 seconds
+          keepAliveInterval = setInterval(() => {
+            if (ws && ws.readyState === WebSocket.OPEN) {
+              try {
+                ws.send(JSON.stringify({ type: "ping" }));
+                console.log('🏓 Ping sent');
+              } catch (error) {
+                console.error('❌ Failed to send ping:', error);
+              }
+            }
+          }, 30000); // 30 seconds
+
+
           // Initialize audio capture
           try {
             stream = await navigator.mediaDevices.getUserMedia({ 
@@ -960,6 +980,13 @@
 
         ws.onclose = () => {
           console.log('🔌 WebSocket closed');
+
+          // Clear keepalive interval
+          if (keepAliveInterval) {
+            clearInterval(keepAliveInterval);
+            keepAliveInterval = null;
+            console.log('🛑 Keepalive stopped');
+          }
           
           // Clean up audio resources
           cleanupAudioResources();
