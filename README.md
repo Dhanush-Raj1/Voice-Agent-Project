@@ -21,7 +21,7 @@
 🌐 The application is deployed and live
   
 👉 [Access the web app here](https://voice-agent-project-eszo.onrender.com)    
-  
+<br>
 > [!NOTE]
 > The voice agent requires lot of computing power as a result the agent might be slow or takes time to respond.  
 > For best experience, please use **Google Chrome**, as the application has been tested primarily on Chrome.       
