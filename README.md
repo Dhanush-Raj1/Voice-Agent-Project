@@ -12,7 +12,7 @@
   <img src="https://img.shields.io/badge/Edge_TTS-0078D4?style=for-the-badge&logoColor=black&labelColor=white&color=0078D4" />
 </p>
 
-<h3 align="center">Real-time Voice-Powered AI Assistant with Document Intelligence and Web Search</h3>  
+<h3 align="center">Real-time AI-powered Voice Assistant with Document Intelligence and Web Search</h3>  
 <h3 align="center">Talk to Your PDFs, Search the Web, and Get Instant Answers - All by Voice!</h3>  
 
 <br>
