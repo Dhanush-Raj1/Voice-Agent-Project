@@ -23,9 +23,8 @@
 👉 [Access the web app here](https://voice-agent-project-eszo.onrender.com)    
   
 > [!NOTE]
-> The voice agent requires lot of computing power as a result the agent might be slow or takes time to reload/refresh.
-> For the best experience, please use **Google Chrome**, as the application has been tested and validated primarily on Chrome.
-> The initial load of the web app may take 1-2 minutes.    
+> The voice agent requires lot of computing power as a result the agent might be slow or takes time to respond.  
+> For best experience, please use **Google Chrome**, as the application has been tested primarily on Chrome.       
     
 > [!TIP]  
 > For the best experience, please refer to the [Usage Guide](#-usage-guide) section below to learn how to navigate and use the web app effectively.
