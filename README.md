@@ -251,7 +251,7 @@ build_college_vectorstore(
 
 ### 6️⃣ Run the Application
 ```bash
-python src/main1.py
+uvicorn src.main:app 
 ```
 
 The server will start at: **`http://localhost:8000`**
